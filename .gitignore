@@ -6,9 +6,11 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
-
-# Root planning artifacts
-.codex/
+node_modules/
+.turbo/
+.pnpm-store/
+pnpm-debug.log*
+.pub-cache/
 
 # Node / API
 api/node_modules/
@@ -27,7 +29,6 @@ mobile/build/
 mobile/.flutter-plugins
 mobile/.flutter-plugins-dependencies
 mobile/.packages
-mobile/pubspec.lock
 mobile/.env
 mobile/.env.*
 !mobile/.env.example

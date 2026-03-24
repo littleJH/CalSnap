@@ -1,0 +1,29 @@
+{
+  "name": "calsnap",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "setup": "pnpm install && pnpm run bootstrap",
+    "bootstrap": "turbo run bootstrap",
+    "analyze": "turbo run analyze",
+    "build": "turbo run build",
+    "check": "pnpm --filter ./api analyze && pnpm --filter ./api test && pnpm --filter ./api build && pnpm --filter ./mobile analyze && pnpm --filter ./mobile test && pnpm --filter ./mobile build",
+    "clean": "turbo run clean && node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true});require('fs').rmSync('.turbo',{recursive:true,force:true});\"",
+    "api:dev": "pnpm --filter ./api dev",
+    "api:migrate": "pnpm --filter ./api db:migrate",
+    "test:api": "pnpm --filter ./api test",
+    "mobile:run": "pnpm --filter ./mobile run run",
+    "test:mobile": "pnpm --filter ./mobile test"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "turbo": "^2.5.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["bcrypt", "better-sqlite3", "esbuild"]
+  }
+}

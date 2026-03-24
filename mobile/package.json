@@ -1,0 +1,13 @@
+{
+  "name": "calsnap-mobile-tools",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "bootstrap": "cross-env PUB_CACHE=../.pub-cache flutter pub get",
+    "analyze": "cross-env PUB_CACHE=../.pub-cache flutter analyze",
+    "test": "cross-env PUB_CACHE=../.pub-cache flutter test",
+    "build": "cross-env PUB_CACHE=../.pub-cache flutter build web --debug",
+    "run": "cross-env PUB_CACHE=../.pub-cache flutter run",
+    "clean": "cross-env PUB_CACHE=../.pub-cache flutter clean"
+  }
+}
