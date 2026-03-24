@@ -82,6 +82,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 3. Load and analyze the implementation context:
    - **REQUIRED**: Read tasks.md for the complete task list and execution plan
    - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
+   - **REQUIRED IF PRESENT**: Read `.specify/memory/constitution.md` and treat it as
+     authoritative for scope, trust boundaries, and non-negotiable rules
    - **IF EXISTS**: Read data-model.md for entities and relationships
    - **IF EXISTS**: Read contracts/ for API specifications and test requirements
    - **IF EXISTS**: Read research.md for technical decisions and constraints
@@ -132,10 +134,12 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
 
 5. Parse tasks.md structure and extract:
-   - **Task phases**: Setup, Tests, Core, Integration, Polish
+   - **Task phases**: Use the actual phases and user story groupings defined in tasks.md
    - **Task dependencies**: Sequential vs parallel execution rules
    - **Task details**: ID, description, file paths, parallel markers [P]
    - **Execution flow**: Order and dependency requirements
+   - **Requested scope**: If `$ARGUMENTS` names a phase, story, or task IDs, restrict
+     execution to that subset while still honoring dependencies
 
 6. Execute implementation following the task plan:
    - **Phase-by-phase execution**: Complete each phase before moving to the next
@@ -143,6 +147,9 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
+   - **Constitution compliance**: Do not implement behavior that expands scope beyond
+     approved MVP boundaries or weakens user isolation, estimate transparency, or
+     server-side secret handling
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
@@ -150,6 +157,11 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Core development**: Implement models, services, CLI commands, endpoints
    - **Integration work**: Database connections, middleware, logging, external services
    - **Polish and validation**: Unit tests, performance optimization, documentation
+   - **Real paths only**: Use the actual `mobile/` and `api/` paths from the plan when present
+   - **Verification tasks are mandatory when specified**: Do not skip contract,
+     integration, or quickstart-derived validation tasks that appear in tasks.md
+   - **Security boundaries stay intact**: PackyCode credentials remain server-only and
+     all history access remains user-scoped
 
 8. Progress tracking and error handling:
    - Report progress after each completed task
@@ -164,6 +176,9 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Check that implemented features match the original specification
    - Validate that tests pass and coverage meets requirements
    - Confirm the implementation follows the technical plan
+   - Confirm quickstart critical-path validation has either been executed or explicitly
+     deferred with a reason
+   - Confirm constitution-critical rules still hold after implementation
    - Report final status with summary of completed work
 
 Note: This command assumes a complete task breakdown exists in tasks.md. If tasks are incomplete or missing, suggest running `/speckit.tasks` first to regenerate the task list.

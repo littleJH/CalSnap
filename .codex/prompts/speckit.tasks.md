@@ -61,6 +61,8 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
    - **Optional**: data-model.md (entities), contracts/ (interface contracts), research.md (decisions), quickstart.md (test scenarios)
    - Note: Not all projects have all documents. Generate tasks based on what's available.
+   - If a constitution exists, treat it as authoritative when resolving ambiguity in
+     task coverage or sequencing.
 
 3. **Execute task generation workflow**:
    - Load plan.md and extract tech stack, libraries, project structure
@@ -68,6 +70,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If data-model.md exists: Extract entities and map to user stories
    - If contracts/ exists: Map interface contracts to user stories
    - If research.md exists: Extract decisions for setup tasks
+   - If quickstart.md exists: Convert required validation flows into explicit tasks
    - Generate tasks organized by user story (see Task Generation Rules below)
    - Generate dependency graph showing user story completion order
    - Create parallel execution examples per user story
@@ -131,7 +134,9 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**Tests are OPTIONAL unless required by artifacts**: Generate test or verification tasks
+whenever the spec, constitution, contracts, or quickstart define required validation,
+even if the user did not explicitly ask for TDD.
 
 ### Checklist Format (REQUIRED)
 
@@ -178,7 +183,8 @@ Every task MUST strictly follow this format:
 
 2. **From Contracts**:
    - Map each interface contract → to the user story it serves
-   - If tests requested: Each interface contract → contract test task [P] before implementation in that story's phase
+   - If contracts define externally consumed endpoints or schemas: add contract test or
+     verification tasks before implementation in that story's phase
 
 3. **From Data Model**:
    - Map each entity to the user story(ies) that need it
@@ -189,6 +195,9 @@ Every task MUST strictly follow this format:
    - Shared infrastructure → Setup phase (Phase 1)
    - Foundational/blocking tasks → Foundational phase (Phase 2)
    - Story-specific setup → within that story's phase
+   - Use real paths from plan.md rather than generic sample paths
+   - Preserve architecture boundaries from the plan, such as separate `mobile/` and
+     `api/` roots when present
 
 ### Phase Structure
 
@@ -198,3 +207,14 @@ Every task MUST strictly follow this format:
   - Within each story: Tests (if requested) → Models → Services → Endpoints → Integration
   - Each phase should be a complete, independently testable increment
 - **Final Phase**: Polish & Cross-Cutting Concerns
+
+### Constitution Coverage Requirements
+
+- Include explicit work for authentication and session handling when any story requires
+  account access
+- Include explicit work for structured analysis validation and unsupported-scene retry
+  behavior when AI recognition is in scope
+- Include explicit work for user-scoped authorization checks when history or stored data
+  is in scope
+- Include explicit verification tasks for the demo-critical journey described in
+  quickstart.md when such a document exists

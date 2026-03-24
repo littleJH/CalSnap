@@ -1,0 +1,36 @@
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.idea/
+.vscode/
+
+# Root planning artifacts
+.codex/
+
+# Node / API
+api/node_modules/
+api/dist/
+api/coverage/
+api/data/
+api/storage/uploads/
+api/.env
+api/.env.*
+!api/.env.example
+*.log
+
+# Flutter / mobile
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/pubspec.lock
+mobile/.env
+mobile/.env.*
+!mobile/.env.example
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/android/.gradle/

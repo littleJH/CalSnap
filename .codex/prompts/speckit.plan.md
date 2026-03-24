@@ -61,6 +61,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
    - Fill Technical Context (mark unknowns as "NEEDS CLARIFICATION")
    - Fill Constitution Check section from constitution
+   - Carry constitution-mandated constraints into the plan as explicit design choices
    - Evaluate gates (ERROR if violations unjustified)
    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
    - Phase 1: Generate data-model.md, contracts/, quickstart.md
@@ -120,6 +121,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Decision: [what was chosen]
    - Rationale: [why chosen]
    - Alternatives considered: [what else evaluated]
+   - Constitution impact: [which principle or gate this decision satisfies]
 
 **Output**: research.md with all NEEDS CLARIFICATION resolved
 
@@ -131,14 +133,28 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Entity name, fields, relationships
    - Validation rules from requirements
    - State transitions if applicable
+   - If the feature includes account-bound history or analysis records, explicitly model
+     ownership and access boundaries
+   - Preserve constitution-critical entities such as `User` and `FoodRecord` when the
+     feature depends on them
 
 2. **Define interface contracts** (if project has external interfaces) → `/contracts/`:
    - Identify what interfaces the project exposes to users or other systems
    - Document the contract format appropriate for the project type
    - Examples: public APIs for libraries, command schemas for CLI tools, endpoints for web services, grammars for parsers, UI contracts for applications
+   - For CalSnap-like features, include contracts for authentication, image analysis,
+     history listing, history detail, and deletion whenever they are in scope
+   - Contracts for AI analysis flows must preserve structured outputs and unsupported-scene
+     behavior required by the constitution
    - Skip if project is purely internal (build scripts, one-off tools, etc.)
 
-3. **Agent context update**:
+3. **Define verification flow** in `quickstart.md`:
+   - Document the local demo-critical journey end to end
+   - Include setup, happy-path validation, unsupported-scene validation, and
+     account-isolation validation when relevant
+   - If any required verification cannot be run locally, state the limitation explicitly
+
+4. **Agent context update**:
    - Run `.specify/scripts/powershell/update-agent-context.ps1 -AgentType codex`
    - These scripts detect which AI agent is in use
    - Update the appropriate agent-specific context file
@@ -151,3 +167,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 - Use absolute paths
 - ERROR on gate failures or unresolved clarifications
+- If a constitution exists, it overrides generic planning defaults in this prompt
+- Plans MUST separate product-facing flows from infrastructure concerns clearly enough
+  to support future provider or storage replacement without rewriting core behavior
+- Plans for account, AI, or history features MUST document user isolation, server-side
+  secret handling, and failure behavior explicitly

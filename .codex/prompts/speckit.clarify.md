@@ -16,7 +16,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-Goal: Detect and reduce ambiguity or missing decision points in the active feature specification and record the clarifications directly in the spec file.
+Goal: Detect and reduce ambiguity or missing decision points in the active feature
+specification and record the clarifications directly in the spec file.
 
 Note: This clarification workflow is expected to run (and be completed) BEFORE invoking `/speckit.plan`. If the user explicitly states they are skipping clarification (e.g., exploratory spike), you may proceed, but must warn that downstream rework risk increases.
 
@@ -29,7 +30,19 @@ Execution steps:
    - If JSON parsing fails, abort and instruct user to re-run `/speckit.specify` or verify feature branch environment.
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-2. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
+2. Load the current spec file and `.specify/memory/constitution.md` if present.
+   Treat the constitution as authoritative for approved scope, trust boundaries, and
+   non-negotiable requirements.
+
+   If `plan.md` or `tasks.md` already exist for this feature:
+   - Continue only if clarification still affects product correctness, acceptance
+     criteria, scope boundaries, or validation behavior
+   - Warn in the final report that downstream artifacts may need regeneration or manual
+     sync after spec updates
+
+   Perform a structured ambiguity & coverage scan using this taxonomy. For each
+   category, mark status: Clear / Partial / Missing. Produce an internal coverage map
+   used for prioritization (do not output raw map unless no questions will be asked).
 
    Functional Scope & Behavior:
    - Core user goals & success criteria
@@ -81,19 +94,31 @@ Execution steps:
    - TODO markers / unresolved decisions
    - Ambiguous adjectives ("robust", "intuitive") lacking quantification
 
+   Constitution Fit:
+   - Approved MVP scope boundaries
+   - Trust messaging for estimated results
+   - Single-item analysis constraints
+   - User isolation and server-side secret boundaries
+
    For each category with Partial or Missing status, add a candidate question opportunity unless:
    - Clarification would not materially change implementation or validation strategy
    - Information is better deferred to planning phase (note internally)
+   - The constitution already answers it decisively
 
 3. Generate (internally) a prioritized queue of candidate clarification questions (maximum 5). Do NOT output them all at once. Apply these constraints:
     - Maximum of 5 total questions across the whole session.
     - Each question must be answerable with EITHER:
        - A short multiple‑choice selection (2–5 distinct, mutually exclusive options), OR
        - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words").
-    - Only include questions whose answers materially impact architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation.
+    - Only include questions whose answers materially impact architecture, data
+      modeling, task decomposition, test design, UX behavior, operational readiness,
+      or compliance validation.
     - Ensure category coverage balance: attempt to cover the highest impact unresolved categories first; avoid asking two low-impact questions when a single high-impact area (e.g., security posture) is unresolved.
     - Exclude questions already answered, trivial stylistic preferences, or plan-level execution details (unless blocking correctness).
     - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
+    - Do not ask questions that would expand the feature beyond constitution-approved
+      scope unless the user is explicitly amending scope and understands that a
+      constitution or spec change may be required.
     - If more than 5 categories remain unresolved, select the top 5 by (Impact * Uncertainty) heuristic.
 
 4. Sequential questioning loop (interactive):
@@ -145,6 +170,9 @@ Execution steps:
        - Non-functional constraint → Add/modify measurable criteria in Non-Functional / Quality Attributes section (convert vague adjective to metric or explicit target).
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
        - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
+       - Scope clarification → Update In Scope / Out of Scope / Assumptions sections.
+       - Constitution-bound clarification → Keep the updated wording inside constitution
+         limits; do not silently weaken or remove a mandatory project rule.
     - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.
     - Save the spec file AFTER each integration to minimize risk of context loss (atomic overwrite).
     - Preserve formatting: do not reorder unrelated sections; keep heading hierarchy intact.
@@ -165,17 +193,23 @@ Execution steps:
    - Path to updated spec.
    - Sections touched (list names).
    - Coverage summary table listing each taxonomy category with Status: Resolved (was Partial/Missing and addressed), Deferred (exceeds question quota or better suited for planning), Clear (already sufficient), Outstanding (still Partial/Missing but low impact).
+   - If `plan.md` or `tasks.md` already exist, explicitly list them under
+     "Downstream Artifacts Potentially Affected".
    - If any Outstanding or Deferred remain, recommend whether to proceed to `/speckit.plan` or run `/speckit.clarify` again later post-plan.
    - Suggested next command.
 
 Behavior rules:
 
 - If no meaningful ambiguities found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding.
+- If the constitution already resolves the open ambiguity, do not ask the user to
+  restate it; apply the constitution and report that no further clarification is needed.
 - If spec file missing, instruct user to run `/speckit.specify` first (do not create a new spec here).
 - Never exceed 5 total asked questions (clarification retries for a single question do not count as new questions).
 - Avoid speculative tech stack questions unless the absence blocks functional clarity.
 - Respect user early termination signals ("stop", "done", "proceed").
 - If no questions asked due to full coverage, output a compact coverage summary (all categories Clear) then suggest advancing.
 - If quota reached with unresolved high-impact categories remaining, explicitly flag them under Deferred with rationale.
+- If clarifications are accepted after plan/tasks exist, recommend regenerating or
+  reviewing downstream artifacts before implementation continues.
 
 Context for prioritization: $ARGUMENTS

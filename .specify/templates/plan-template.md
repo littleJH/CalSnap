@@ -31,7 +31,20 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] Scope remains inside the approved MVP and does not add excluded capabilities
+      such as multi-food decomposition, medical advice, payments, or community
+      features without an approved amendment.
+- [ ] The design preserves single-item analysis and defines a structured result
+      contract with item name, portion description, `kcal`, protein, carbs, fat,
+      and confidence or retry guidance.
+- [ ] Secrets stay server-side, password storage is protected, and every history or
+      account-facing interface is explicitly user-scoped.
+- [ ] Failure handling covers unsupported images, low-confidence analysis, and
+      network or service failures with a retry path the user can understand.
+- [ ] The architecture keeps Flutter client, Express API, AI adapter, and
+      persistence boundaries separable so local SQLite can later be replaced.
+- [ ] The plan includes a way to verify the demo-critical path locally: register or
+      login, capture or upload, analyze, view result, and view history.
 
 ## Project Structure
 

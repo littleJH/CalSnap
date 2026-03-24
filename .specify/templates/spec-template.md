@@ -75,6 +75,20 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
+## Scope Boundaries & Assumptions *(mandatory)*
+
+### In Scope
+
+- [List the capabilities this feature explicitly includes]
+
+### Out of Scope
+
+- [List the capabilities this feature explicitly excludes]
+
+### Assumptions
+
+- [Document product or operating assumptions used to shape this feature]
+
 ## Requirements *(mandatory)*
 
 <!--
@@ -94,6 +108,12 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+### Non-Functional Requirements
+
+- **NFR-001**: System MUST [performance, reliability, or usability constraint]
+- **NFR-002**: System MUST [security or privacy constraint]
+- **NFR-003**: System MUST [trust, transparency, or supportability constraint]
 
 ### Key Entities *(include if feature involves data)*
 
